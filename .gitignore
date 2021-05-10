@@ -5,3 +5,7 @@
 /frontend/dist
 /frontend/scratch
 
+
+/backend/node_modules
+/backend/dist
+/backend/logs
