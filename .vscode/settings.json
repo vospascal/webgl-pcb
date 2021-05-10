@@ -1,18 +1,31 @@
 {
-    "editor.formatOnSave": true,
-    "search.exclude": {
-        "**/node_modules": true
-    },
-    "files.watcherExclude": {
-        "**/.git/objects/**": true,
-        "**/.git/subtree-cache/**": true,
-        "**/node_modules/**": true,
-        "env-*": true
-    },
-    "files.exclude": {
-        "**/.git": true,
-        "**/.DS_Store": true,
-        "**/node_modules": true,
-        "env*": true
-    }
+  "editor.formatOnSave": true,
+  "search.exclude": {
+    "**/node_modules": true
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "env-*": true
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "env*": true
+  },
+  "local-history.daysLimit": 30,
+  "local-history.maxDisplay": 10,
+  "local-history.saveDelay": 0,
+  "local-history.enabled": 2,
+  "local-history.exclude": [
+    "**/.history/**",
+    "**/.vscode**",
+    "**/node_modules/**",
+    "**/typings/**",
+    "**/out/**",
+    "**/dist/**",
+    "**/build/**"
+  ]
 }
