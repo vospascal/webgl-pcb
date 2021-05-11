@@ -1,6 +1,7 @@
 import express from 'express';
-export class TestController {
+
+export class StatusController {
     async index(req: express.Request, res: express.Response) {
-        res.status(200).send('Hello world');
+        res.send('OK');
     }
 }

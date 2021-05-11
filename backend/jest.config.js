@@ -1,8 +1,10 @@
 module.exports = {
     verbose: true,
-    testEnvironment: 'jsdom',
-    testURL: 'http://localhost:3000',
+    preset: 'ts-jest', // make jest work with ts on nodejs
+    testEnvironment: 'node',
+    testURL: 'http://localhost:4000',
     collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}'],
+    clearMocks: true,
     coverageThreshold: {
         global: {
             statements: 10,

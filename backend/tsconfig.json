@@ -1,19 +1,23 @@
 {
     "compilerOptions": {
-        "target": "es2018",
+        "lib": ["es2020"],
+        "target": "es2020",
+        "module": "commonjs",
+        "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "moduleResolution": "node",
-        "module": "commonjs",
         "sourceMap": true,
         "outDir": "dist",
         "rootDir": "./src",
         "allowJs": true,
-        "baseUrl": ".",
         "esModuleInterop": true,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "baseUrl": "./src",
+        "paths": {
+            "~/*": ["*"] // add alias to root with ~
+        }
     },
     "include": ["src/**/*.ts", "./test/**/*.ts"],
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules", "src/**/*.test*.ts"]
 }
