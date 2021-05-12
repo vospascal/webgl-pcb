@@ -1,18 +1,20 @@
 {
     "compilerOptions": {
+        "strict": true /* Enable all strict type-checking options. */,
         "lib": ["es2020"],
         "target": "es2020",
         "module": "commonjs",
         "moduleResolution": "node",
+        "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "sourceMap": true,
         "outDir": "dist",
         "rootDir": "./src",
-        "allowJs": true,
-        "esModuleInterop": true,
         "resolveJsonModule": true,
+        "allowJs": true /* Allow javascript files to be compiled. Useful when migrating JS to TS */,
+        "checkJs": true /* Report errors in .js files. Works in tandem with allowJs. */,
         "baseUrl": "./src",
         "paths": {
             "~/*": ["*"] // add alias to root with ~
