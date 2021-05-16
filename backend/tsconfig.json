@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "types": ["node", "jest", "express"],
         "strict": true /* Enable all strict type-checking options. */,
         "lib": ["es2020"],
         "target": "es2020",

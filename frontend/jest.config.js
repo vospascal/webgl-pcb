@@ -15,4 +15,7 @@ module.exports = {
     moduleDirectories: ['node_modules', 'src'],
     setupFilesAfterEnv: [],
     setupFiles: ['<rootDir>/jest.config.setupFiles.js'],
+    moduleNameMapper: {
+        '~/(.*)': ['<rootDir>/src/$1'], // add alias to root with ~
+    },
 };

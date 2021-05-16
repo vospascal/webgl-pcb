@@ -23,6 +23,7 @@ module.exports = {
         'plugin:prettier/recommended', //should be at the last
     ],
     rules: {
+        'import/no-unresolved': ['error', { ignore: ['^~'] }], // ignore imports with ~ cause they are our alias
         'no-unused-vars': 'off',
         '@typescript-eslint/no-unused-vars': ['error'],
         '@typescript-eslint/no-var-requires': 'off',
@@ -32,5 +33,11 @@ module.exports = {
         'react/jsx-uses-react': 'off',
         'react/react-in-jsx-scope': 'off',
         '@typescript-eslint/explicit-module-boundary-types': 'off',
+        'prettier/prettier': [
+            'error',
+            {
+                endOfLine: 'auto',
+            },
+        ],
     },
 };

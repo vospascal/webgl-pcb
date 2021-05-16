@@ -10,6 +10,7 @@ export class DefaultRoutes extends BaseRoutes {
         this.app.get('/health-check', (req, res) => res.send('OK'));
         this.app.all('*', function (req: express.Request, res: express.Response) {
             res.status(404).send('Page not found');
+            //res.status(301).redirect('/not-found');
         });
         return this.app;
     }
