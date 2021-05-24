@@ -145,6 +145,8 @@ const App = () => {
                         </SimpleExample>
                     </Center>
                     <CameraPositionMover />
+                    <axesHelper size={2} position={[0, 2, 0]} />
+                    <gridHelper position={[0, -0.999, 0]} scale={[2, 2, 2]} />
                 </Canvas>
             </PageLayout.Left>
             <PageLayout.Right>

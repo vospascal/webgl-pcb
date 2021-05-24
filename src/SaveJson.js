@@ -12,10 +12,10 @@ const SaveJson = () => {
         <div>
             {JSON.stringify(state.points) !== JSON.stringify({}) ? (
                 <a href={url} download="points">
-                    opslaan disk
+                    save to disk
                 </a>
             ) : (
-                <span>opslaan disk</span>
+                <span>save to disk</span>
             )}
         </div>
     );
