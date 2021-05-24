@@ -1,52 +1,57 @@
 import ReactDOM from 'react-dom';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Canvas, render, events, useThree } from '@react-three/fiber';
 import { OrbitControls, Center, useGLTF, Box, Html, TransformControls } from '@react-three/drei';
-
-import { debounce } from '~/utils/utils';
 
 import useStore from '~/store';
 import PageLayout from '~/PageLayout';
 import SaveJson from '~/SaveJson';
 import LoadJson from '~/LoadJson';
+import { debounce } from '~/utils/utils';
 
 export const Sphere = ({ args, ...props }: ISphere) => {
-    const { name, edit, setActiveName, setActiveCamera, setDraging, setActivePostion } = useStore((state) => state);
+    const { id, edit, setActiveId, setActiveCamera, setDraging, setActivePostion } = useStore((state) => state);
     const [active, setActive] = useState(false);
     const ref = useRef();
     const { camera } = useThree();
 
     useEffect(() => {
-        setActive(name === props.name);
-    }, [name]);
+        setActive(id === props.id);
+    }, [id]);
 
     const transformControls = React.useRef<TransformControlsImpl>(null!);
 
-    function changeHandler() {
-        const start = Object.assign({}, transformControls.current.positionStart);
-        const offset = Object.assign({}, transformControls.current.offset);
-        // console.log(transformControls.current);
-        // console.log({
-        //     x: (start.x += offset.x),
-        //     y: (start.y += offset.y),
-        //     z: (start.z += offset.z),
-        // })
-        const position = [+(start.x += offset.x).toFixed(2), +(start.y += offset.y).toFixed(2), +(start.z += offset.z).toFixed(2)];
-        setActivePostion({ name, position, camera: camera.position }); // set position
-
-        /// save current camera view
-    }
+    React.useEffect(() => {
+        // if (transformControls.current) {
+        const { current: controls } = transformControls;
+        const postionCallback = () => {
+            const start = Object.assign({}, transformControls.current.positionStart);
+            const offset = Object.assign({}, transformControls.current.offset);
+            const cameraPosition = Object.assign({}, camera.position);
+            // console.log(transformControls.current);
+            // console.log({
+            //     x: (start.x += offset.x),
+            //     y: (start.y += offset.y),
+            //     z: (start.z += offset.z),
+            // });
+            // console.log(camera.position);
+            const position = [(start.x += offset.x), (start.y += offset.y), (start.z += offset.z)];
+            setActivePostion({ id: props.id, position, camera: cameraPosition }); // set position
+        };
+        controls.addEventListener('objectChange', postionCallback);
+        return () => controls.removeEventListener('objectChange', postionCallback);
+        // }
+    });
 
     React.useEffect(() => {
-        if (transformControls.current) {
-            const { current: controls } = transformControls;
-            const callback = (event) => {
-                setDraging(event.value); //set is dragging
-            };
-            controls.addEventListener('dragging-changed', callback);
-            controls.addEventListener('objectChange', debounce(changeHandler, 150));
-            return () => controls.removeEventListener('dragging-changed', callback);
-        }
+        // if (transformControls.current) {
+        const { current: controls } = transformControls;
+        const draggingCallback = (event) => {
+            setDraging(event.value); //set is dragging
+        };
+        controls.addEventListener('dragging-changed', draggingCallback);
+        return () => controls.removeEventListener('dragging-changed', draggingCallback);
+        // }
     });
 
     return (
@@ -55,7 +60,7 @@ export const Sphere = ({ args, ...props }: ISphere) => {
                 scale={[0.05, 0.05, 0.05]}
                 ref={ref}
                 onClick={() => {
-                    setActiveName(props.name);
+                    setActiveId(props.id);
                     setActiveCamera(props.camera);
                 }}
             >
@@ -66,23 +71,37 @@ export const Sphere = ({ args, ...props }: ISphere) => {
     );
 };
 
-const SimpleExample = ({ children }) => {
-    const { scene } = useGLTF('Arduino_UNO.glb');
+const StmBoard = ({ children }) => {
+    const { scene } = useGLTF('v1.0_stm_board_f407.glb');
 
     return (
-        <Center position={[0, 0, 0]}>
-            <Box args={[2, 2, 2]}>
-                <meshNormalMaterial attach="material" wireframe />
-            </Box>
+        <>
             <primitive
+                position={[-0.29, -0.5, -0.905]}
                 object={scene}
-                scale={[0.05, 0.05, 0.05]}
-                position={[-2, -1, -1.5]} // The position on the canvas of the object [x,y,x]
-                rotation={[-1.58, 0, 0]} // The rotation of the object
+                scale={[3, 3, 3]}
+                // rotation={[-1.58, 0, 0]} // The rotation of the object
                 castShadow
             />
             {children}
-        </Center>
+        </>
+    );
+};
+
+const TmcBoard = ({ children }) => {
+    const { scene } = useGLTF('V1.2_tmc.glb');
+
+    return (
+        <>
+            <primitive
+                position={[0, -1, 0]}
+                object={scene}
+                scale={[3, 3, 3]}
+                // rotation={[-1.58, 0, 0]} // The rotation of the object
+                castShadow
+            />
+            {children}
+        </>
     );
 };
 
@@ -95,17 +114,17 @@ const Sidebar = () => {
             {/* {JSON.stringify(state, null, 2)} */}
             <br />
             {state.points.map((item) => (
-                <div key={item.name}>
+                <div key={item.id}>
                     {/* {JSON.stringify(item, null, 2)} */}
                     <button
                         onClick={() => {
-                            state.setActiveName(item.name);
+                            state.setActiveId(item.id);
                             state.setActiveCamera(item.camera);
                         }}
                     >
                         {item.title}
                     </button>
-                    {state.name === item.name ? <div>{item.text}</div> : null}
+                    {state.id === item.id ? <div>{item.text}</div> : null}
                 </div>
             ))}
             {state.edit ? (
@@ -131,7 +150,7 @@ const CameraPositionMover = () => {
     useEffect(() => {
         const { x, y, z } = state.camera;
         camera.position.set(x, y, z); //x, y,z
-    }, [state.camera]);
+    }, [state.camera, state.id]);
 
     return null;
 };
@@ -157,10 +176,16 @@ const App = () => {
                     <pointLight position={[10, 10, 10]} />
 
                     <OrbitControls enabled={!state.dragging} enablePan={true} enableZoom={true} enableRotate={true} enableDamping dampingFactor={0.5} />
-                    <SimpleExample />
+                    {/* <Center>
+                        <Box args={[2, 2, 2]}>
+                            <meshNormalMaterial attach="material" wireframe />
+                        </Box>
+                    </Center> */}
+                    <StmBoard />
+                    <TmcBoard />
 
                     {state.points.map((item) => (
-                        <Sphere key={item.name} castShadow camera={item.camera} position={item.position} name={item.name} />
+                        <Sphere key={item.id} id={item.id} castShadow camera={item.camera} position={item.position} />
                     ))}
                     <CameraPositionMover />
                     {/* <axesHelper size={2} position={[0, 2, 0]} /> */}
