@@ -7,18 +7,29 @@ import { v4 as uuidv4 } from 'uuid';
 console.log();
 const useStore = create((set) => ({
     name: '',
-    positions: { x: 0, y: 0, z: 0 },
     camera: { x: -3.5, y: 1.5, z: 1.5 },
     points: points,
-    speed: 20,
+    dragging: false,
+    edit: false,
+    setEdit: (edit: boolean) =>
+        set(() => ({
+            edit: edit,
+        })),
+    setDraging: (dragging: boolean) =>
+        set(() => ({
+            dragging: dragging,
+        })),
     setActiveName: (name: string) =>
         set(() => ({
             name: name,
         })),
-    setActivePostion: (name, position) =>
+    setActivePostion: ({ name, position }) =>
         set((state) => {
-            const foundIndex = state.points.findIndex((item) => item.name == name);
-            state.points[foundIndex].position = position;
+            if (name && position) {
+                const foundIndex = state.points.findIndex((item) => item.name == name);
+                state.points[foundIndex].position = position;
+            }
+
             return state;
         }),
     setActiveCamera: (camera) =>
@@ -40,9 +51,6 @@ const useStore = create((set) => ({
         set((state) => {
             console.log(points);
             state.points = points;
-            // state.camera = points[0].camera;
-            // state.name = points[0].name;
-            // state.positions = points[0].position;
         }),
 }));
 
