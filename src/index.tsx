@@ -6,10 +6,12 @@ import { OrbitControls, Center, useGLTF, Box, Html } from '@react-three/drei';
 import useStore from '~/store';
 import PageLayout from '~/PageLayout';
 import useKeyPress from '~/useKeyPress';
-
-import points from '~/points';
+import SaveJson from '~/SaveJson';
+import LoadJson from '~/LoadJson';
 
 export const Sphere = ({ args, ...props }: ISphere) => {
+    const { name, setActiveName, setActivePostion, setActiveCamera, speed } = useStore((state) => state);
+    const [active, setActive] = useState(false);
     const ref = useRef();
     const leftKey = useKeyPress(['ArrowLeft']);
     const rightKey = useKeyPress(['ArrowRight']);
@@ -18,17 +20,11 @@ export const Sphere = ({ args, ...props }: ISphere) => {
     const ShiftUpKey = useKeyPress(['w']);
     const ShiftDownKey = useKeyPress(['s']);
 
-    const { camera } = useThree();
-    // camera.position.addScaledVector(camera.getWorldDirection(), 1.0);
-
     const direction = {
-        x: -Number(leftKey) / 50 + Number(rightKey) / 50,
-        y: Number(upKey) / 50 - Number(downKey) / 50,
-        z: Number(ShiftUpKey) / 50 - Number(ShiftDownKey) / 50,
+        x: -Number(leftKey) / speed + Number(rightKey) / speed,
+        y: Number(upKey) / speed - Number(downKey) / speed,
+        z: Number(ShiftUpKey) / speed - Number(ShiftDownKey) / speed,
     };
-
-    const { name, setActiveName, setActivePostion, setActiveCamera } = useStore((state) => state);
-    const [active, setActive] = useState(false);
 
     useEffect(() => {
         setActive(name === props.name);
@@ -48,12 +44,12 @@ export const Sphere = ({ args, ...props }: ISphere) => {
             ref={ref}
             onClick={() => {
                 setActiveName(props.name);
-                setActivePostion(ref.current.position);
+                setActivePostion(props.name, ref.current.position);
                 setActiveCamera(props.camera);
             }}
         >
             <sphereBufferGeometry attach="geometry" args={args} />
-            <meshStandardMaterial attach="material" color={active ? 'red' : 'gray'} roughness={0.5} />
+            <meshStandardMaterial attach="material" color={active ? 'red' : 'gold'} roughness={0.5} />
         </mesh>
     );
 };
@@ -80,11 +76,13 @@ const SimpleExample = ({ children }) => {
 
 const Sidebar = () => {
     const state = useStore((state) => state);
+    const ref = useRef();
+
     return (
         <div>
             {/* {JSON.stringify(state, null, 2)} */}
             <br />
-            {points.map((item) => (
+            {state.points.map((item) => (
                 <div key={item.name}>
                     {/* {JSON.stringify(item, null, 2)} */}
                     <button
@@ -98,6 +96,12 @@ const Sidebar = () => {
                     {state.name === item.name ? <div>{item.text}</div> : null}
                 </div>
             ))}
+            <hr />
+            <input type="text" ref={ref} placeholder="name" />
+            <button onClick={() => state.setNewPoint(ref.current.value)}>add point</button>
+            <hr />
+            <SaveJson />
+            <LoadJson />
         </div>
     );
 };
@@ -114,6 +118,7 @@ const CameraPositionMover = () => {
 };
 
 const App = () => {
+    const state = useStore((state) => state);
     return (
         <PageLayout>
             <PageLayout.Left>
@@ -134,8 +139,8 @@ const App = () => {
                     <pointLight position={[10, 10, 10]} />
                     <Center position={[0, 0, 0]}>
                         <SimpleExample>
-                            {points.map((item) => (
-                                <Sphere castShadow color="#EF2D5E" camera={item.camera} position={item.position} scale={[0.05, 0.05, 0.05]} name={item.name} />
+                            {state.points.map((item) => (
+                                <Sphere key={item.name} castShadow camera={item.camera} position={item.position} scale={[0.05, 0.05, 0.05]} name={item.name} />
                             ))}
                         </SimpleExample>
                     </Center>

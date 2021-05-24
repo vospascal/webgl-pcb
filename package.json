@@ -30,6 +30,7 @@
         "styled-components": "^5.3.0",
         "styled-system": "^5.1.5",
         "three": "^0.128.0",
+        "uuid": "^8.3.2",
         "zustand": "^3.5.1"
     },
     "devDependencies": {
