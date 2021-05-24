@@ -23,11 +23,12 @@ const useStore = create((set) => ({
         set(() => ({
             name: name,
         })),
-    setActivePostion: ({ name, position }) =>
+    setActivePostion: ({ name, position, camera }) =>
         set((state) => {
             if (name && position) {
                 const foundIndex = state.points.findIndex((item) => item.name == name);
                 state.points[foundIndex].position = position;
+                state.points[foundIndex].camera = camera;
             }
 
             return state;

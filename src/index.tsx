@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Canvas, render, events, useThree } from '@react-three/fiber';
 import { OrbitControls, Center, useGLTF, Box, Html, TransformControls } from '@react-three/drei';
 
-import { throttle } from '~/utils/utils';
+import { debounce } from '~/utils/utils';
 
 import useStore from '~/store';
 import PageLayout from '~/PageLayout';
@@ -14,6 +14,7 @@ export const Sphere = ({ args, ...props }: ISphere) => {
     const { name, edit, setActiveName, setActiveCamera, setDraging, setActivePostion } = useStore((state) => state);
     const [active, setActive] = useState(false);
     const ref = useRef();
+    const { camera } = useThree();
 
     useEffect(() => {
         setActive(name === props.name);
@@ -24,14 +25,14 @@ export const Sphere = ({ args, ...props }: ISphere) => {
     function changeHandler() {
         const start = Object.assign({}, transformControls.current.positionStart);
         const offset = Object.assign({}, transformControls.current.offset);
-
+        // console.log(transformControls.current);
         // console.log({
         //     x: (start.x += offset.x),
         //     y: (start.y += offset.y),
         //     z: (start.z += offset.z),
         // })
         const position = [+(start.x += offset.x).toFixed(2), +(start.y += offset.y).toFixed(2), +(start.z += offset.z).toFixed(2)];
-        setActivePostion({ name, position }); // set position
+        setActivePostion({ name, position, camera: camera.position }); // set position
 
         /// save current camera view
     }
@@ -43,13 +44,13 @@ export const Sphere = ({ args, ...props }: ISphere) => {
                 setDraging(event.value); //set is dragging
             };
             controls.addEventListener('dragging-changed', callback);
-            controls.addEventListener('objectChange', throttle(changeHandler, 100));
+            controls.addEventListener('objectChange', debounce(changeHandler, 150));
             return () => controls.removeEventListener('dragging-changed', callback);
         }
     });
 
     return (
-        <TransformControls enabled={edit} position={props.position} ref={transformControls} mode={'translate'} showX={active} showY={active} showZ={true}>
+        <TransformControls enabled={edit} position={props.position} ref={transformControls} mode={'translate'} showX={active} showY={active} showZ={active}>
             <mesh
                 scale={[0.05, 0.05, 0.05]}
                 ref={ref}
