@@ -18,11 +18,19 @@
         }
     },
     "dependencies": {
+        "@react-three/drei": "^5.1.7",
+        "@react-three/fiber": "^6.2.0",
+        "@types/styled-system": "^5.1.11",
         "axios": "^0.21.1",
         "husky": "^6.0.0",
+        "immer": "^9.0.2",
         "lodash": "^4.17.21",
         "react": "^17.0.2",
-        "react-dom": "^17.0.2"
+        "react-dom": "^17.0.2",
+        "styled-components": "^5.3.0",
+        "styled-system": "^5.1.5",
+        "three": "^0.128.0",
+        "zustand": "^3.5.1"
     },
     "devDependencies": {
         "@babel/cli": "^7.13.16",
