@@ -108,13 +108,18 @@ const Sidebar = () => {
                     {state.name === item.name ? <div>{item.text}</div> : null}
                 </div>
             ))}
+            {state.edit ? (
+                <>
+                    <hr />
+                    <input type="text" ref={ref} placeholder="name" />
+                    <button onClick={() => state.setNewPoint(ref.current.value)}>add point</button>
+                    <hr />
+                    <SaveJson />
+                    <LoadJson />
+                </>
+            ) : null}
             <hr />
-            <input type="text" ref={ref} placeholder="name" />
-            <button onClick={() => state.setNewPoint(ref.current.value)}>add point</button>
-            <hr />
-            <SaveJson />
-            <LoadJson />
-            <hr />
+
             <button onClick={() => state.setEdit(!state.edit)}>editormode({JSON.stringify(state.edit)})</button>
         </div>
     );
